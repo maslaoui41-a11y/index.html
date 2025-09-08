@@ -1,85 +1,126 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>عيد ميلاد سعيد</title>
-  <style>
-    body {
-      text-align: center;
-      background: url('https://i.imgur.com/oCkEbrA.jpg') no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Tahoma', sans-serif;
-      color: white;
-    }
-    h1 {
-      margin-top: 50px;
-      font-size: 3em;
-      text-shadow: 2px 2px 4px #000;
-    }
-    #candle {
-      margin-top: 40px;
-      width: 150px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 15px 30px;
-      font-size: 1.2em;
-      border: none;
-      border-radius: 10px;
-      background-color: crimson;
-      color: white;
-      cursor: pointer;
-    }
-    .falling-rose {
-      position: fixed;
-      top: -50px;
-      font-size: 24px;
-      animation: fall linear forwards;
-    }
-    @keyframes fall {
-      to { transform: translateY(110vh); }
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>عيد ميلاد سعيد 🎂</title>
+<style>
+  body{
+    margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#ffdde1,#ee9ca7); color:#fff; font-family:"Tahoma",Arial;
+    overflow:hidden; text-align:center;
+  }
+  h1{ margin:10px; text-shadow:2px 2px 6px #0008; font-size:clamp(22px,3.2vw,34px); }
+
+  /* الكعكة */
+  .stage{ position:relative; width:min(92vw,560px); margin-top:6px }
+  .plate{ width:75%; height:18px; margin:0 auto; background:#f1f1f1; border-radius:999px; }
+  .cake{ width:70%; margin:0 auto; position:relative; display:flex; align-items:flex-end; justify-content:center; }
+  .layer{ position:relative; width:100%; height:150px; background:#f8c8d1; border-radius:18px; }
+  .icing{ position:absolute; left:0; right:0; top:-26px; height:50px; background:#fff; border-radius:18px 18px 10px 10px; }
+
+  /* الشموع */
+  .candles{ position:absolute; top:-64px; left:50%; transform:translateX(-50%); width:86%; display:flex; justify-content:space-between; }
+  .candle{ position:relative; width:14px; height:54px; background:#ffd95a; border-radius:4px; }
+  .candle::after{ content:""; position:absolute; top:-8px; left:50%; width:2px; height:10px; background:#333; transform:translateX(-50%); }
+  .flame{ position:absolute; top:-26px; left:50%; transform:translateX(-50%); width:14px; height:22px; border-radius:10px; background:radial-gradient(circle,#fff8 40%,#0000 41%), radial-gradient(90% 95% at 50% 100%,#ffcd38,#ff8b38); animation:flicker .18s infinite alternate; }
+  @keyframes flicker{ from{transform:translateX(-50%) scale(1)} to{transform:translateX(-50%) scale(1.15)} }
+  .off .flame{ display:none }
+
+  /* رسالة */
+  .message{ opacity:0; transform:translateY(10px); transition:.6s; font-size:clamp(18px,2.6vw,26px); margin-top:12px; text-shadow:2px 2px 6px #000a; }
+  .message.show{ opacity:1; transform:translateY(0) }
+
+  /* ورود */
+  .petal{ position:fixed; top:-40px; width:34px; height:34px; background:url('https://i.imgur.com/I5Wc4kL.png') center/cover no-repeat; animation:fall linear forwards; }
+  @keyframes fall{ to{ transform:translateY(110vh) rotate(360deg); opacity:0 } }
+
+  /* غطاء البداية */
+  #overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.5); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:20px;
+    z-index:99; cursor:pointer;
+  }
+</style>
 </head>
 <body>
-  <h1>🎉 عيد ميلاد سعيد حبيبتي 🎂</h1>
-  <img id="candle" src="https://i.imgur.com/WyXn0U7.png" alt="شمعة">
-  <br>
-  <button onclick="startBlowing()">انفخ على الشمعة 🎤</button>
+  <h1>🎉 كــل عام وأنتِ بخير يا حبيبتي 🎂</h1>
 
-  <script>
-    function startBlowing() {
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-          const audioContext = new AudioContext();
-          const source = audioContext.createMediaStreamSource(stream);
-          const analyser = audioContext.createAnalyser();
-          source.connect(analyser);
-          const data = new Uint8Array(analyser.frequencyBinCount);
+  <div class="stage">
+    <div class="cake">
+      <div class="layer">
+        <div class="icing"></div>
+        <div class="candles" id="candles"></div>
+      </div>
+    </div>
+    <div class="plate"></div>
+  </div>
 
-          function detectBlow() {
-            analyser.getByteFrequencyData(data);
-            let volume = data.reduce((a, b) => a + b) / data.length;
-            if (volume > 50) {
-              document.getElementById('candle').src = 'https://i.imgur.com/XZ8S3pU.png';
-              document.querySelector('h1').innerText = "💖 أحبك، عيد ميلاد سعيد 🌹";
-              for (let i = 0; i < 30; i++) {
-                let rose = document.createElement('div');
-                rose.className = 'falling-rose';
-                rose.style.left = Math.random() * 100 + 'vw';
-                rose.style.animationDuration = (2 + Math.random() * 3) + 's';
-                rose.innerText = '🌹';
-                document.body.appendChild(rose);
-                setTimeout(() => rose.remove(), 5000);
-              }
-            } else {
-              requestAnimationFrame(detectBlow);
-            }
-          }
-          detectBlow();
-        })
-        .catch(err => alert("يجب السماح للميكروفون"));
+  <div id="msg" class="message">💖 أحبك من كل قلبي… عيد ميلاد سعيد 🌹</div>
+
+  <div id="overlay">اضغطي هنا لبدء المفاجأة 🎤</div>
+
+<script>
+  // إنشاء 18 شمعة
+  const candlesWrap = document.getElementById('candles');
+  const CANDLES_COUNT = 18;
+  for(let i=0;i<CANDLES_COUNT;i++){
+    const c = document.createElement('div');
+    c.className = 'candle';
+    const f = document.createElement('div');
+    f.className = 'flame';
+    c.appendChild(f);
+    candlesWrap.appendChild(c);
+  }
+
+  const msg = document.getElementById('msg');
+  const overlay = document.getElementById('overlay');
+  let audioContext, analyser, dataArr, blown=false;
+
+  overlay.addEventListener('click', async ()=>{
+    overlay.style.display="none";
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioContext.createMediaStreamSource(stream);
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+      dataArr = new Uint8Array(analyser.frequencyBinCount);
+      source.connect(analyser);
+      detectBlow();
+    }catch(e){ alert("⚠️ يجب السماح بالميكروفون"); }
+  });
+
+  function detectBlow(){
+    if(blown) return;
+    requestAnimationFrame(detectBlow);
+    analyser.getByteFrequencyData(dataArr);
+    const volume = dataArr.reduce((a,b)=>a+b,0)/dataArr.length;
+    if(volume > 55){
+      blown = true;
+      extinguishAll();
+      msg.classList.add('show');
+      spawnPetals();
     }
-  </script>
+  }
+
+  function extinguishAll(){ document.querySelectorAll('.candle').forEach(c=> c.classList.add('off')); }
+
+  function spawnPetals(){
+    const batch = () => {
+      for(let i=0;i<18;i++){
+        const p = document.createElement('div');
+        p.className='petal';
+        p.style.left = (Math.random()*100)+'vw';
+        p.style.animationDuration = (5+Math.random()*6)+'s';
+        document.body.appendChild(p);
+        setTimeout(()=>p.remove(), 12000);
+      }
+    };
+    batch();
+    const timer=setInterval(batch,5000);
+    setTimeout(()=>clearInterval(timer),20000);
+  }
+</script>
 </body>
 </html>
