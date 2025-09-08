@@ -1,126 +1,147 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>عيد ميلاد سعيد 🎂</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Birthday Cake</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 <style>
-  body{
-    margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    background:linear-gradient(135deg,#ffdde1,#ee9ca7); color:#fff; font-family:"Tahoma",Arial;
-    overflow:hidden; text-align:center;
+  body { margin: 0; overflow: hidden; background-color: #000; }
+  #message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Pacifico', cursive;
+    font-size: 4em;
+    color: #ff0000; /* لون أحمر جميل */
+    text-align: center;
+    opacity: 0;
+    transition: opacity 2s;
+    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff6666, 0 0 40px #ff6666;
   }
-  h1{ margin:10px; text-shadow:2px 2px 6px #0008; font-size:clamp(22px,3.2vw,34px); }
-
-  /* الكعكة */
-  .stage{ position:relative; width:min(92vw,560px); margin-top:6px }
-  .plate{ width:75%; height:18px; margin:0 auto; background:#f1f1f1; border-radius:999px; }
-  .cake{ width:70%; margin:0 auto; position:relative; display:flex; align-items:flex-end; justify-content:center; }
-  .layer{ position:relative; width:100%; height:150px; background:#f8c8d1; border-radius:18px; }
-  .icing{ position:absolute; left:0; right:0; top:-26px; height:50px; background:#fff; border-radius:18px 18px 10px 10px; }
-
-  /* الشموع */
-  .candles{ position:absolute; top:-64px; left:50%; transform:translateX(-50%); width:86%; display:flex; justify-content:space-between; }
-  .candle{ position:relative; width:14px; height:54px; background:#ffd95a; border-radius:4px; }
-  .candle::after{ content:""; position:absolute; top:-8px; left:50%; width:2px; height:10px; background:#333; transform:translateX(-50%); }
-  .flame{ position:absolute; top:-26px; left:50%; transform:translateX(-50%); width:14px; height:22px; border-radius:10px; background:radial-gradient(circle,#fff8 40%,#0000 41%), radial-gradient(90% 95% at 50% 100%,#ffcd38,#ff8b38); animation:flicker .18s infinite alternate; }
-  @keyframes flicker{ from{transform:translateX(-50%) scale(1)} to{transform:translateX(-50%) scale(1.15)} }
-  .off .flame{ display:none }
-
-  /* رسالة */
-  .message{ opacity:0; transform:translateY(10px); transition:.6s; font-size:clamp(18px,2.6vw,26px); margin-top:12px; text-shadow:2px 2px 6px #000a; }
-  .message.show{ opacity:1; transform:translateY(0) }
-
-  /* ورود */
-  .petal{ position:fixed; top:-40px; width:34px; height:34px; background:url('https://i.imgur.com/I5Wc4kL.png') center/cover no-repeat; animation:fall linear forwards; }
-  @keyframes fall{ to{ transform:translateY(110vh) rotate(360deg); opacity:0 } }
-
-  /* غطاء البداية */
-  #overlay{
-    position:fixed; inset:0; background:rgba(0,0,0,0.5); color:#fff;
-    display:flex; align-items:center; justify-content:center; font-size:20px;
-    z-index:99; cursor:pointer;
-  }
+  canvas { display: block; }
 </style>
 </head>
 <body>
-  <h1>🎉 كــل عام وأنتِ بخير يا حبيبتي 🎂</h1>
-
-  <div class="stage">
-    <div class="cake">
-      <div class="layer">
-        <div class="icing"></div>
-        <div class="candles" id="candles"></div>
-      </div>
-    </div>
-    <div class="plate"></div>
-  </div>
-
-  <div id="msg" class="message">💖 أحبك من كل قلبي… عيد ميلاد سعيد 🌹</div>
-
-  <div id="overlay">اضغطي هنا لبدء المفاجأة 🎤</div>
-
+<div id="message">Happy Birthday My Love</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 <script>
-  // إنشاء 18 شمعة
-  const candlesWrap = document.getElementById('candles');
-  const CANDLES_COUNT = 18;
-  for(let i=0;i<CANDLES_COUNT;i++){
-    const c = document.createElement('div');
-    c.className = 'candle';
-    const f = document.createElement('div');
-    f.className = 'flame';
-    c.appendChild(f);
-    candlesWrap.appendChild(c);
-  }
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-  const msg = document.getElementById('msg');
-  const overlay = document.getElementById('overlay');
-  let audioContext, analyser, dataArr, blown=false;
+// إضاءة
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+const pointLight = new THREE.PointLight(0xffffff, 1);
+pointLight.position.set(0, 10, 10);
+scene.add(pointLight);
 
-  overlay.addEventListener('click', async ()=>{
-    overlay.style.display="none";
-    try{
-      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const source = audioContext.createMediaStreamSource(stream);
-      analyser = audioContext.createAnalyser();
-      analyser.fftSize = 256;
-      dataArr = new Uint8Array(analyser.frequencyBinCount);
-      source.connect(analyser);
-      detectBlow();
-    }catch(e){ alert("⚠️ يجب السماح بالميكروفون"); }
-  });
+// الكعكة
+const colors = [0x4b2e2e, 0x4b2e2e, 0x4b2e2e];
+const layers = [2, 1.5, 1];
+const radii = [3, 2.5, 2];
+let yPos = 0;
+const cakeParts = [];
+for (let i=0; i<layers.length; i++){
+  const geo = new THREE.CylinderGeometry(radii[i], radii[i], layers[i], 32);
+  const mat = new THREE.MeshStandardMaterial({color: colors[i]});
+  const layer = new THREE.Mesh(geo, mat);
+  layer.position.y = yPos + layers[i]/2;
+  yPos += layers[i];
+  scene.add(layer);
+  cakeParts.push(layer);
 
-  function detectBlow(){
-    if(blown) return;
-    requestAnimationFrame(detectBlow);
-    analyser.getByteFrequencyData(dataArr);
-    const volume = dataArr.reduce((a,b)=>a+b,0)/dataArr.length;
-    if(volume > 55){
-      blown = true;
-      extinguishAll();
-      msg.classList.add('show');
-      spawnPetals();
+  const topGeo = new THREE.CircleGeometry(radii[i], 32);
+  const topMat = new THREE.MeshStandardMaterial({color:0xff69b4});
+  const top = new THREE.Mesh(topGeo, topMat);
+  top.rotation.x = -Math.PI/2;
+  top.position.y = yPos;
+  scene.add(top);
+  cakeParts.push(top);
+}
+
+// الشموع
+const candleHeight=1, candleRadius=0.05;
+const candles=[], flames=[];
+for (let i=0; i<18; i++){
+  const angle=(i/18)*Math.PI*2;
+  const x=2*Math.cos(angle), z=2*Math.sin(angle);
+  const candle = new THREE.Mesh(new THREE.CylinderGeometry(candleRadius, candleRadius, candleHeight,16), new THREE.MeshStandardMaterial({color:0xff0000}));
+  candle.position.set(x, yPos + candleHeight/2, z);
+  scene.add(candle);
+  candles.push(candle);
+
+  const flame = new THREE.PointLight(0xffff66, 1.5, 3);
+  flame.position.set(x, yPos + candleHeight, z);
+  scene.add(flame);
+  flames.push(flame);
+}
+
+camera.position.set(0,5,10);
+camera.lookAt(0,yPos/2,0);
+
+// النجوم الخلفية بعد ظهور الرسالة
+const starGeo = new THREE.BufferGeometry();
+const starCount = 150;
+const starPositions = new Float32Array(starCount*3);
+for(let i=0;i<starCount*3;i++){
+  starPositions[i] = (Math.random()-0.5)*50;
+}
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions,3));
+const starMat = new THREE.PointsMaterial({color:0xffffff, size:0.1});
+const stars = new THREE.Points(starGeo, starMat);
+stars.visible = false; // ستظهر بعد نفخ الشموع
+scene.add(stars);
+
+const clock = new THREE.Clock();
+let blowing=false, blowProgress=0;
+
+function animate(){
+  requestAnimationFrame(animate);
+  const time = clock.getElapsedTime();
+
+  if(!blowing){
+    flames.forEach((f,i)=>{
+      f.position.y = yPos + candleHeight + 0.05*Math.sin(time*5 + i);
+      f.intensity = 1.2 + 0.3*Math.sin(time*10 + i);
+    });
+  } else {
+    blowProgress += 0.02;
+    candles.forEach(c=>c.scale.y = Math.max(0,1-blowProgress));
+    flames.forEach(f=>f.intensity = Math.max(0,1.5-blowProgress*10));
+    cakeParts.forEach(p=>{p.material.opacity=Math.max(0,1-blowProgress*1.2); p.material.transparent=true;});
+    if(blowProgress>=1){
+      document.getElementById('message').style.opacity=1;
+      stars.visible=true;
     }
   }
 
-  function extinguishAll(){ document.querySelectorAll('.candle').forEach(c=> c.classList.add('off')); }
-
-  function spawnPetals(){
-    const batch = () => {
-      for(let i=0;i<18;i++){
-        const p = document.createElement('div');
-        p.className='petal';
-        p.style.left = (Math.random()*100)+'vw';
-        p.style.animationDuration = (5+Math.random()*6)+'s';
-        document.body.appendChild(p);
-        setTimeout(()=>p.remove(), 12000);
-      }
-    };
-    batch();
-    const timer=setInterval(batch,5000);
-    setTimeout(()=>clearInterval(timer),20000);
+  // تحريك النجوم
+  if(stars.visible){
+    const positions = stars.geometry.attributes.position.array;
+    for(let i=1;i<positions.length;i+=3){
+      positions[i]-=0.05; // تحرك عمودي
+      if(positions[i]<-10) positions[i]=25; // إعادة النجوم للأعلى
+    }
+    stars.geometry.attributes.position.needsUpdate = true;
   }
+
+  renderer.render(scene,camera);
+}
+animate();
+
+// بدء نفخ الشموع بعد 5 ثوانٍ
+setTimeout(()=>{blowing=true;},5000);
+
+window.addEventListener('resize', ()=>{
+  camera.aspect=window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
 </script>
 </body>
 </html>
