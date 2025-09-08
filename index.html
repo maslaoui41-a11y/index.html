@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>عيد ميلاد سعيد</title>
+  <style>
+    body {
+      text-align: center;
+      background: url('https://i.imgur.com/oCkEbrA.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Tahoma', sans-serif;
+      color: white;
+    }
+    h1 {
+      margin-top: 50px;
+      font-size: 3em;
+      text-shadow: 2px 2px 4px #000;
+    }
+    #candle {
+      margin-top: 40px;
+      width: 150px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 10px;
+      background-color: crimson;
+      color: white;
+      cursor: pointer;
+    }
+    .falling-rose {
+      position: fixed;
+      top: -50px;
+      font-size: 24px;
+      animation: fall linear forwards;
+    }
+    @keyframes fall {
+      to { transform: translateY(110vh); }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 عيد ميلاد سعيد حبيبتي 🎂</h1>
+  <img id="candle" src="https://i.imgur.com/WyXn0U7.png" alt="شمعة">
+  <br>
+  <button onclick="startBlowing()">انفخ على الشمعة 🎤</button>
+
+  <script>
+    function startBlowing() {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          const audioContext = new AudioContext();
+          const source = audioContext.createMediaStreamSource(stream);
+          const analyser = audioContext.createAnalyser();
+          source.connect(analyser);
+          const data = new Uint8Array(analyser.frequencyBinCount);
+
+          function detectBlow() {
+            analyser.getByteFrequencyData(data);
+            let volume = data.reduce((a, b) => a + b) / data.length;
+            if (volume > 50) {
+              document.getElementById('candle').src = 'https://i.imgur.com/XZ8S3pU.png';
+              document.querySelector('h1').innerText = "💖 أحبك، عيد ميلاد سعيد 🌹";
+              for (let i = 0; i < 30; i++) {
+                let rose = document.createElement('div');
+                rose.className = 'falling-rose';
+                rose.style.left = Math.random() * 100 + 'vw';
+                rose.style.animationDuration = (2 + Math.random() * 3) + 's';
+                rose.innerText = '🌹';
+                document.body.appendChild(rose);
+                setTimeout(() => rose.remove(), 5000);
+              }
+            } else {
+              requestAnimationFrame(detectBlow);
+            }
+          }
+          detectBlow();
+        })
+        .catch(err => alert("يجب السماح للميكروفون"));
+    }
+  </script>
+</body>
+</html>
