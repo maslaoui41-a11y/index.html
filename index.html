@@ -1,147 +1,452 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3D Birthday Cake</title>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-<style>
-  body { margin: 0; overflow: hidden; background-color: #000; }
-  #message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: 'Pacifico', cursive;
-    font-size: 4em;
-    color: #ff0000; /* لون أحمر جميل */
-    text-align: center;
-    opacity: 0;
-    transition: opacity 2s;
-    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff6666, 0 0 40px #ff6666;
-  }
-  canvas { display: block; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كعكة عيد ميلاد ثلاثية الأبعاد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            touch-action: manipulation;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            color: #ff9ecb;
+            text-shadow: 0 0 10px rgba(255, 158, 203, 0.7);
+            animation: pulse 2s infinite;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #a0d2ff;
+        }
+        
+        .cake-container {
+            position: relative;
+            width: 100%;
+            height: 60vh;
+            margin: 10px 0;
+        }
+        
+        #cake-canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .mic-status {
+            margin: 15px 0;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .mic-icon {
+            font-size: 1.5rem;
+            color: #ff6b6b;
+        }
+        
+        .message {
+            font-size: 2rem;
+            margin-top: 15px;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            color: #ffcc00;
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255, 204, 0, 0.1);
+            max-width: 90%;
+        }
+        
+        .message.show {
+            opacity: 1;
+        }
+        
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            animation: float 6s ease-in infinite;
+            color: #ff6b6b;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .permission-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff9ecb);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+        }
+        
+        .permission-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .cake-container {
+                height: 50vh;
+            }
+            
+            .message {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<div id="message">Happy Birthday My Love</div>
-<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
-<script>
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({antialias: true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+    <div class="container">
+        <h1>🎂 عيد ميلاد سعيد! 🎂</h1>
+        <p class="subtitle">انفخ في الميكروفون لإطفاء الشموع!</p>
+        
+        <div class="cake-container">
+            <canvas id="cake-canvas"></canvas>
+            <div class="hearts" id="hearts-container"></div>
+        </div>
+        
+        <div class="mic-status" id="mic-status">
+            <span class="mic-icon">🎤</span>
+            <span id="mic-text">انقر للسماح باستخدام الميكروفون</span>
+        </div>
+        
+        <button class="permission-btn" id="permission-btn">تفعيل الميكروفون</button>
+        
+        <div class="message" id="birthday-message">عيد ميلاد سعيد!</div>
+    </div>
 
-// إضاءة
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
-const pointLight = new THREE.PointLight(0xffffff, 1);
-pointLight.position.set(0, 10, 10);
-scene.add(pointLight);
-
-// الكعكة
-const colors = [0x4b2e2e, 0x4b2e2e, 0x4b2e2e];
-const layers = [2, 1.5, 1];
-const radii = [3, 2.5, 2];
-let yPos = 0;
-const cakeParts = [];
-for (let i=0; i<layers.length; i++){
-  const geo = new THREE.CylinderGeometry(radii[i], radii[i], layers[i], 32);
-  const mat = new THREE.MeshStandardMaterial({color: colors[i]});
-  const layer = new THREE.Mesh(geo, mat);
-  layer.position.y = yPos + layers[i]/2;
-  yPos += layers[i];
-  scene.add(layer);
-  cakeParts.push(layer);
-
-  const topGeo = new THREE.CircleGeometry(radii[i], 32);
-  const topMat = new THREE.MeshStandardMaterial({color:0xff69b4});
-  const top = new THREE.Mesh(topGeo, topMat);
-  top.rotation.x = -Math.PI/2;
-  top.position.y = yPos;
-  scene.add(top);
-  cakeParts.push(top);
-}
-
-// الشموع
-const candleHeight=1, candleRadius=0.05;
-const candles=[], flames=[];
-for (let i=0; i<18; i++){
-  const angle=(i/18)*Math.PI*2;
-  const x=2*Math.cos(angle), z=2*Math.sin(angle);
-  const candle = new THREE.Mesh(new THREE.CylinderGeometry(candleRadius, candleRadius, candleHeight,16), new THREE.MeshStandardMaterial({color:0xff0000}));
-  candle.position.set(x, yPos + candleHeight/2, z);
-  scene.add(candle);
-  candles.push(candle);
-
-  const flame = new THREE.PointLight(0xffff66, 1.5, 3);
-  flame.position.set(x, yPos + candleHeight, z);
-  scene.add(flame);
-  flames.push(flame);
-}
-
-camera.position.set(0,5,10);
-camera.lookAt(0,yPos/2,0);
-
-// النجوم الخلفية بعد ظهور الرسالة
-const starGeo = new THREE.BufferGeometry();
-const starCount = 150;
-const starPositions = new Float32Array(starCount*3);
-for(let i=0;i<starCount*3;i++){
-  starPositions[i] = (Math.random()-0.5)*50;
-}
-starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions,3));
-const starMat = new THREE.PointsMaterial({color:0xffffff, size:0.1});
-const stars = new THREE.Points(starGeo, starMat);
-stars.visible = false; // ستظهر بعد نفخ الشموع
-scene.add(stars);
-
-const clock = new THREE.Clock();
-let blowing=false, blowProgress=0;
-
-function animate(){
-  requestAnimationFrame(animate);
-  const time = clock.getElapsedTime();
-
-  if(!blowing){
-    flames.forEach((f,i)=>{
-      f.position.y = yPos + candleHeight + 0.05*Math.sin(time*5 + i);
-      f.intensity = 1.2 + 0.3*Math.sin(time*10 + i);
-    });
-  } else {
-    blowProgress += 0.02;
-    candles.forEach(c=>c.scale.y = Math.max(0,1-blowProgress));
-    flames.forEach(f=>f.intensity = Math.max(0,1.5-blowProgress*10));
-    cakeParts.forEach(p=>{p.material.opacity=Math.max(0,1-blowProgress*1.2); p.material.transparent=true;});
-    if(blowProgress>=1){
-      document.getElementById('message').style.opacity=1;
-      stars.visible=true;
-    }
-  }
-
-  // تحريك النجوم
-  if(stars.visible){
-    const positions = stars.geometry.attributes.position.array;
-    for(let i=1;i<positions.length;i+=3){
-      positions[i]-=0.05; // تحرك عمودي
-      if(positions[i]<-10) positions[i]=25; // إعادة النجوم للأعلى
-    }
-    stars.geometry.attributes.position.needsUpdate = true;
-  }
-
-  renderer.render(scene,camera);
-}
-animate();
-
-// بدء نفخ الشموع بعد 5 ثوانٍ
-setTimeout(()=>{blowing=true;},5000);
-
-window.addEventListener('resize', ()=>{
-  camera.aspect=window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
-</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // العناصر الرئيسية في الصفحة
+        const canvas = document.getElementById('cake-canvas');
+        const birthdayMessage = document.getElementById('birthday-message');
+        const heartsContainer = document.getElementById('hearts-container');
+        const micStatus = document.getElementById('mic-status');
+        const micText = document.getElementById('mic-text');
+        const permissionBtn = document.getElementById('permission-btn');
+        
+        // إعداد المشهد ثلاثي الأبعاد
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        renderer.setClearColor(0x000000, 0);
+        
+        // إضافة الإضاءة
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 10, 7);
+        scene.add(directionalLight);
+        
+        // إنشاء الكعكة
+        const cakeGroup = new THREE.Group();
+        scene.add(cakeGroup);
+        
+        // إعداد طبقات الكعكة
+        const layerHeight = 0.5;
+        const layerRadius = [3, 2.8, 2.2];
+        const layerColors = [0xF8B195, 0xF67280, 0xC06C84];
+        
+        // إنشاء طبقات الكعكة
+        for (let i = 0; i < 3; i++) {
+            const geometry = new THREE.CylinderGeometry(layerRadius[i], layerRadius[i], layerHeight, 32);
+            const material = new THREE.MeshPhongMaterial({ color: layerColors[i] });
+            const layer = new THREE.Mesh(geometry, material);
+            layer.position.y = i * layerHeight;
+            cakeGroup.add(layer);
+        }
+        
+        // إنشاء القاعدة
+        const baseGeometry = new THREE.CylinderGeometry(3.2, 3.2, 0.2, 32);
+        const baseMaterial = new THREE.MeshPhongMaterial({ color: 0x6C5B7B });
+        const base = new THREE.Mesh(baseGeometry, baseMaterial);
+        base.position.y = -0.1;
+        cakeGroup.add(base);
+        
+        // إنشاء الشموع (18 شمعة)
+        const candles = [];
+        const candleFlames = [];
+        const candleCount = 18;
+        const candleLit = Array(candleCount).fill(true);
+        
+        for (let i = 0; i < candleCount; i++) {
+            const angle = (i / candleCount) * Math.PI * 2;
+            const radius = 2.5;
+            const x = Math.cos(angle) * radius;
+            const z = Math.sin(angle) * radius;
+            
+            // إنشاء الشمعة
+            const candleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 16);
+            const candleMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 });
+            const candle = new THREE.Mesh(candleGeometry, candleMaterial);
+            candle.position.set(x, 1.7, z);
+            cakeGroup.add(candle);
+            candles.push(candle);
+            
+            // إنشاء لهب الشمعة
+            const flameGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+            const flameMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xff9900,
+                emissive: 0xff9900,
+                transparent: true,
+                opacity: 0.8
+            });
+            const flame = new THREE.Mesh(flameGeometry, flameMaterial);
+            flame.position.set(x, 2.3, z);
+            cakeGroup.add(flame);
+            candleFlames.push(flame);
+        }
+        
+        // وضع الكاميرا
+        camera.position.set(0, 5, 10);
+        camera.lookAt(0, 0, 0);
+        
+        // إضافة تأثيرات للشموع
+        let time = 0;
+        let blowing = false;
+        let blowProgress = 0;
+        let blowIntensity = 0;
+        let audioContext;
+        let analyser;
+        let microphone;
+        let microphoneAllowed = false;
+        
+        // وظيفة الرسوم المتحركة
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.03;
+            
+            // تدوير الكعكة ببطء
+            cakeGroup.rotation.y = time * 0.1;
+            
+            // تحريك لهب الشموع إذا لم يتم نفخها
+            if (!blowing) {
+                candleFlames.forEach((flame, i) => {
+                    if (candleLit[i]) {
+                        flame.position.y = 2.3 + Math.sin(time * 5 + i) * 0.1;
+                        flame.scale.set(
+                            1 + Math.sin(time * 8 + i) * 0.2,
+                            1 + Math.sin(time * 6 + i) * 0.2,
+                            1 + Math.sin(time * 7 + i) * 0.2
+                        );
+                    }
+                });
+            } else {
+                // تأثير النفخ على الشموع
+                blowProgress += blowIntensity * 0.05;
+                
+                candleFlames.forEach((flame, i) => {
+                    if (candleLit[i] && blowProgress > i * 0.03) {
+                        flame.scale.x = Math.max(0, 1 - (blowProgress - i * 0.03) * 5);
+                        flame.scale.y = Math.max(0, 1 - (blowProgress - i * 0.03) * 5);
+                        flame.scale.z = Math.max(0, 1 - (blowProgress - i * 0.03) * 5);
+                        
+                        if (flame.scale.x < 0.1) {
+                            candleLit[i] = false;
+                        }
+                    }
+                });
+                
+                // إذا اكتمل النفخ على جميع الشموع
+                const allBlown = candleLit.every(lit => !lit);
+                if (allBlown) {
+                    birthdayMessage.classList.add('show');
+                    createHearts();
+                    blowing = false;
+                }
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        // بدء الرسوم المتحركة
+        animate();
+        
+        // إنشاء تأثير القلوب
+        function createHearts() {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                    heartsContainer.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 6000);
+                }, i * 200);
+            }
+        }
+        
+        // إعداد تحليل الصوت من الميكروفون
+        function setupAudio() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(stream) {
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    microphone.connect(analyser);
+                    
+                    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                    
+                    function checkBlowing() {
+                        if (!microphoneAllowed) return;
+                        
+                        analyser.getByteFrequencyData(dataArray);
+                        
+                        // حساب شدة الصوت
+                        let sum = 0;
+                        for (let i = 0; i < dataArray.length; i++) {
+                            sum += dataArray[i];
+                        }
+                        const average = sum / dataArray.length;
+                        
+                        // إذا كانت شدة الصوت عالية بما يكفي للنفخ
+                        if (average > 60) {
+                            blowing = true;
+                            blowIntensity = Math.min(1, (average - 60) / 50);
+                            micText.textContent = "جاري النفخ... استمر!";
+                        } else {
+                            blowing = false;
+                            blowIntensity = 0;
+                            micText.textContent = "انفخ في الميكروفون الآن!";
+                        }
+                        
+                        requestAnimationFrame(checkBlowing);
+                    }
+                    
+                    micStatus.style.display = 'flex';
+                    micText.textContent = "انفخ في الميكروفون الآن!";
+                    permissionBtn.style.display = 'none';
+                    microphoneAllowed = true;
+                    
+                    checkBlowing();
+                })
+                .catch(function(err) {
+                    console.error('خطأ في الوصول إلى الميكروفون: ', err);
+                    micText.textContent = "تعذر الوصول إلى الميكروفون";
+                    permissionBtn.textContent = "حاول مرة أخرى";
+                    permissionBtn.style.display = 'block';
+                });
+        }
+        
+        // طلب إذن استخدام الميكروفون
+        permissionBtn.addEventListener('click', function() {
+            setupAudio();
+        });
+        
+        // إعادة التشغيل عند النقر على الشاشة
+        document.addEventListener('click', function() {
+            // إعادة تعيين الشموع إذا كانت جميعها مطفأة
+            const allBlown = candleLit.every(lit => !lit);
+            if (allBlown) {
+                candleLit.fill(true);
+                blowProgress = 0;
+                birthdayMessage.classList.remove('show');
+                
+                candleFlames.forEach(flame => {
+                    flame.scale.set(1, 1, 1);
+                });
+                
+                // إزالة القلوب
+                heartsContainer.innerHTML = '';
+            }
+        });
+        
+        // جعل Canvas متجاوبًا
+        window.addEventListener('resize', () => {
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        });
+    </script>
 </body>
 </html>
