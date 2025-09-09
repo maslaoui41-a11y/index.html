@@ -1,451 +1,223 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كعكة عيد ميلاد ثلاثية الأبعاد</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <title>Customizable Birthday Cake</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            color: #fff;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            touch-action: manipulation;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
+            margin: 0;
             padding: 20px;
+            background-color: #888888;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        
+        #container {
+            position: relative;
+            width: 400px;
+            height: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-        
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-            color: #ff9ecb;
-            text-shadow: 0 0 10px rgba(255, 158, 203, 0.7);
-            animation: pulse 2s infinite;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #a0d2ff;
-        }
-        
-        .cake-container {
-            position: relative;
-            width: 100%;
-            height: 60vh;
-            margin: 10px 0;
-        }
-        
-        #cake-canvas {
-            width: 100%;
-            height: 100%;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.2);
-        }
-        
-        .mic-status {
-            margin: 15px 0;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
             justify-content: center;
-            gap: 10px;
         }
         
-        .mic-icon {
-            font-size: 1.5rem;
-            color: #ff6b6b;
-        }
-        
-        .message {
-            font-size: 2rem;
-            margin-top: 15px;
-            opacity: 0;
-            transition: opacity 1.5s ease;
-            color: #ffcc00;
-            text-align: center;
-            padding: 15px;
-            border-radius: 10px;
-            background: rgba(255, 204, 0, 0.1);
-            max-width: 90%;
-        }
-        
-        .message.show {
-            opacity: 1;
-        }
-        
-        .hearts {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
-        .heart {
-            position: absolute;
-            font-size: 20px;
-            opacity: 0;
-            animation: float 6s ease-in infinite;
-            color: #ff6b6b;
-        }
-        
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .permission-btn {
-            background: linear-gradient(45deg, #ff6b6b, #ff9ecb);
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            border-radius: 50px;
-            color: white;
+        #cake {
+            position: relative;
+            width: 280px;
+            height: 200px;
             cursor: pointer;
+            margin-bottom: 30px;
+        }
+        
+        .cake-layer {
+            position: absolute;
+            width: 100%;
+            height: 60px;
+            border-radius: 10px;
+        }
+        
+        .layer-1 {
+            background-color: #F8B195;
+            bottom: 0;
+            z-index: 1;
+        }
+        
+        .layer-2 {
+            background-color: #F67280;
+            bottom: 60px;
+            width: 240px;
+            left: 20px;
+            z-index: 2;
+        }
+        
+        .layer-3 {
+            background-color: #C06C84;
+            bottom: 120px;
+            width: 200px;
+            left: 40px;
+            z-index: 3;
+        }
+        
+        .cake-top {
+            position: absolute;
+            width: 200px;
+            height: 20px;
+            background-color: #FFD1DC;
+            border-radius: 10px;
+            bottom: 140px;
+            left: 40px;
+            z-index: 4;
+        }
+        
+        .candle {
+            position: absolute;
+            width: 8px;
+            height: 40px;
+            background-color: #FF0000;
+            border-radius: 4px;
+            z-index: 5;
+        }
+        
+        .flame {
+            position: absolute;
+            width: 12px;
+            height: 20px;
+            background: radial-gradient(ellipse at center, #FF9900 0%, #FF5500 80%);
+            border-radius: 50% 50% 20% 20%;
+            z-index: 6;
+            animation: flicker 1.5s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0% { transform: scale(1); opacity: 0.9; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+        
+        #message {
+            position: absolute;
+            font-family: 'Dancing Script', cursive;
+            font-size: 42px;
+            color: #FFFFFF;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 2s;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            width: 80%;
+        }
+        
+        .controls {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            width: 300px;
+        }
+        
+        .slider-container {
             margin: 15px 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
         }
         
-        .permission-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6);
+        input[type="range"] {
+            width: 100%;
         }
         
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .subtitle {
-                font-size: 1rem;
-            }
-            
-            .cake-container {
-                height: 50vh;
-            }
-            
-            .message {
-                font-size: 1.5rem;
-            }
+        label {
+            color: white;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        #candle-count {
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎂 عيد ميلاد سعيد! 🎂</h1>
-        <p class="subtitle">انفخ في الميكروفون لإطفاء الشموع!</p>
-        
-        <div class="cake-container">
-            <canvas id="cake-canvas"></canvas>
-            <div class="hearts" id="hearts-container"></div>
+    <div id="container">
+        <div id="cake">
+            <div class="cake-layer layer-1"></div>
+            <div class="cake-layer layer-2"></div>
+            <div class="cake-layer layer-3"></div>
+            <div class="cake-top"></div>
+            
+            <!-- سيتم إضافة الشموع ديناميكيًا باستخدام JavaScript -->
         </div>
         
-        <div class="mic-status" id="mic-status">
-            <span class="mic-icon">🎤</span>
-            <span id="mic-text">انقر للسماح باستخدام الميكروفون</span>
+        <div id="message">Happy Birthday My Love</div>
+    </div>
+    
+    <div class="controls">
+        <div class="slider-container">
+            <label for="candle-slider">Number of Candles:</label>
+            <input type="range" id="candle-slider" min="1" max="30" value="16">
+            <div id="candle-count">16 candles</div>
         </div>
-        
-        <button class="permission-btn" id="permission-btn">تفعيل الميكروفون</button>
-        
-        <div class="message" id="birthday-message">عيد ميلاد سعيد!</div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // العناصر الرئيسية في الصفحة
-        const canvas = document.getElementById('cake-canvas');
-        const birthdayMessage = document.getElementById('birthday-message');
-        const heartsContainer = document.getElementById('hearts-container');
-        const micStatus = document.getElementById('mic-status');
-        const micText = document.getElementById('mic-text');
-        const permissionBtn = document.getElementById('permission-btn');
+        const cake = document.getElementById('cake');
+        const candleSlider = document.getElementById('candle-slider');
+        const candleCount = document.getElementById('candle-count');
         
-        // إعداد المشهد ثلاثي الأبعاد
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-        renderer.setClearColor(0x000000, 0);
-        
-        // إضافة الإضاءة
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-        
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(5, 10, 7);
-        scene.add(directionalLight);
-        
-        // إنشاء الكعكة
-        const cakeGroup = new THREE.Group();
-        scene.add(cakeGroup);
-        
-        // إعداد طبقات الكعكة
-        const layerHeight = 0.5;
-        const layerRadius = [3, 2.8, 2.2];
-        const layerColors = [0xF8B195, 0xF67280, 0xC06C84];
-        
-        // إنشاء طبقات الكعكة
-        for (let i = 0; i < 3; i++) {
-            const geometry = new THREE.CylinderGeometry(layerRadius[i], layerRadius[i], layerHeight, 32);
-            const material = new THREE.MeshPhongMaterial({ color: layerColors[i] });
-            const layer = new THREE.Mesh(geometry, material);
-            layer.position.y = i * layerHeight;
-            cakeGroup.add(layer);
-        }
-        
-        // إنشاء القاعدة
-        const baseGeometry = new THREE.CylinderGeometry(3.2, 3.2, 0.2, 32);
-        const baseMaterial = new THREE.MeshPhongMaterial({ color: 0x6C5B7B });
-        const base = new THREE.Mesh(baseGeometry, baseMaterial);
-        base.position.y = -0.1;
-        cakeGroup.add(base);
-        
-        // إنشاء الشموع (18 شمعة)
-        const candles = [];
-        const candleFlames = [];
-        const candleCount = 18;
-        const candleLit = Array(candleCount).fill(true);
-        
-        for (let i = 0; i < candleCount; i++) {
-            const angle = (i / candleCount) * Math.PI * 2;
-            const radius = 2.5;
-            const x = Math.cos(angle) * radius;
-            const z = Math.sin(angle) * radius;
+        // إنشاء الشموع بناءً على العدد المحدد
+        function createCandles(count) {
+            // مسح الشموع الحالية
+            const existingCandles = document.querySelectorAll('.candle, .flame');
+            existingCandles.forEach(el => el.remove());
             
-            // إنشاء الشمعة
-            const candleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 16);
-            const candleMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 });
-            const candle = new THREE.Mesh(candleGeometry, candleMaterial);
-            candle.position.set(x, 1.7, z);
-            cakeGroup.add(candle);
-            candles.push(candle);
+            // إضافة الشموع الجديدة
+            const cakeWidth = 280;
+            const spacing = cakeWidth / (count + 1);
             
-            // إنشاء لهب الشمعة
-            const flameGeometry = new THREE.SphereGeometry(0.15, 16, 16);
-            const flameMaterial = new THREE.MeshPhongMaterial({ 
-                color: 0xff9900,
-                emissive: 0xff9900,
-                transparent: true,
-                opacity: 0.8
-            });
-            const flame = new THREE.Mesh(flameGeometry, flameMaterial);
-            flame.position.set(x, 2.3, z);
-            cakeGroup.add(flame);
-            candleFlames.push(flame);
-        }
-        
-        // وضع الكاميرا
-        camera.position.set(0, 5, 10);
-        camera.lookAt(0, 0, 0);
-        
-        // إضافة تأثيرات للشموع
-        let time = 0;
-        let blowing = false;
-        let blowProgress = 0;
-        let blowIntensity = 0;
-        let audioContext;
-        let analyser;
-        let microphone;
-        let microphoneAllowed = false;
-        
-        // وظيفة الرسوم المتحركة
-        function animate() {
-            requestAnimationFrame(animate);
-            time += 0.03;
-            
-            // تدوير الكعكة ببطء
-            cakeGroup.rotation.y = time * 0.1;
-            
-            // تحريك لهب الشموع إذا لم يتم نفخها
-            if (!blowing) {
-                candleFlames.forEach((flame, i) => {
-                    if (candleLit[i]) {
-                        flame.position.y = 2.3 + Math.sin(time * 5 + i) * 0.1;
-                        flame.scale.set(
-                            1 + Math.sin(time * 8 + i) * 0.2,
-                            1 + Math.sin(time * 6 + i) * 0.2,
-                            1 + Math.sin(time * 7 + i) * 0.2
-                        );
-                    }
-                });
-            } else {
-                // تأثير النفخ على الشموع
-                blowProgress += blowIntensity * 0.05;
+            for (let i = 1; i <= count; i++) {
+                const candle = document.createElement('div');
+                candle.className = 'candle';
+                candle.style.left = `${spacing * i - 4}px`;
+                candle.style.bottom = '140px';
                 
-                candleFlames.forEach((flame, i) => {
-                    if (candleLit[i] && blowProgress > i * 0.03) {
-                        flame.scale.x = Math.max(0, 1 - (blowProgress - i * 0.03) * 5);
-                        flame.scale.y = Math.max(0, 1 - (blowProgress - i * 0.03) * 5);
-                        flame.scale.z = Math.max(0, 1 - (blowProgress - i * 0.03) * 5);
-                        
-                        if (flame.scale.x < 0.1) {
-                            candleLit[i] = false;
-                        }
-                    }
-                });
+                const flame = document.createElement('div');
+                flame.className = 'flame';
+                flame.style.left = '-2px';
+                flame.style.bottom = '40px';
                 
-                // إذا اكتمل النفخ على جميع الشموع
-                const allBlown = candleLit.every(lit => !lit);
-                if (allBlown) {
-                    birthdayMessage.classList.add('show');
-                    createHearts();
-                    blowing = false;
-                }
-            }
-            
-            renderer.render(scene, camera);
-        }
-        
-        // بدء الرسوم المتحركة
-        animate();
-        
-        // إنشاء تأثير القلوب
-        function createHearts() {
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.classList.add('heart');
-                    heart.innerHTML = '❤️';
-                    heart.style.left = Math.random() * 100 + '%';
-                    heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                    heartsContainer.appendChild(heart);
-                    
-                    setTimeout(() => {
-                        heart.remove();
-                    }, 6000);
-                }, i * 200);
+                candle.appendChild(flame);
+                cake.appendChild(candle);
             }
         }
         
-        // إعداد تحليل الصوت من الميكروفون
-        function setupAudio() {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioContext.createAnalyser();
-            analyser.fftSize = 256;
-            
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(function(stream) {
-                    microphone = audioContext.createMediaStreamSource(stream);
-                    microphone.connect(analyser);
-                    
-                    const dataArray = new Uint8Array(analyser.frequencyBinCount);
-                    
-                    function checkBlowing() {
-                        if (!microphoneAllowed) return;
-                        
-                        analyser.getByteFrequencyData(dataArray);
-                        
-                        // حساب شدة الصوت
-                        let sum = 0;
-                        for (let i = 0; i < dataArray.length; i++) {
-                            sum += dataArray[i];
-                        }
-                        const average = sum / dataArray.length;
-                        
-                        // إذا كانت شدة الصوت عالية بما يكفي للنفخ
-                        if (average > 60) {
-                            blowing = true;
-                            blowIntensity = Math.min(1, (average - 60) / 50);
-                            micText.textContent = "جاري النفخ... استمر!";
-                        } else {
-                            blowing = false;
-                            blowIntensity = 0;
-                            micText.textContent = "انفخ في الميكروفون الآن!";
-                        }
-                        
-                        requestAnimationFrame(checkBlowing);
-                    }
-                    
-                    micStatus.style.display = 'flex';
-                    micText.textContent = "انفخ في الميكروفون الآن!";
-                    permissionBtn.style.display = 'none';
-                    microphoneAllowed = true;
-                    
-                    checkBlowing();
-                })
-                .catch(function(err) {
-                    console.error('خطأ في الوصول إلى الميكروفون: ', err);
-                    micText.textContent = "تعذر الوصول إلى الميكروفون";
-                    permissionBtn.textContent = "حاول مرة أخرى";
-                    permissionBtn.style.display = 'block';
-                });
-        }
-        
-        // طلب إذن استخدام الميكروفون
-        permissionBtn.addEventListener('click', function() {
-            setupAudio();
+        // تحديث عدد الشموع عند تغيير شريط التمرير
+        candleSlider.addEventListener('input', function() {
+            const count = parseInt(this.value);
+            candleCount.textContent = `${count} candle${count !== 1 ? 's' : ''}`;
+            createCandles(count);
         });
         
-        // إعادة التشغيل عند النقر على الشاشة
-        document.addEventListener('click', function() {
-            // إعادة تعيين الشموع إذا كانت جميعها مطفأة
-            const allBlown = candleLit.every(lit => !lit);
-            if (allBlown) {
-                candleLit.fill(true);
-                blowProgress = 0;
-                birthdayMessage.classList.remove('show');
-                
-                candleFlames.forEach(flame => {
-                    flame.scale.set(1, 1, 1);
-                });
-                
-                // إزالة القلوب
-                heartsContainer.innerHTML = '';
-            }
+        // تهيئة الشموع عند التحميل
+        window.addEventListener('load', function() {
+            createCandles(16);
         });
         
-        // جعل Canvas متجاوبًا
-        window.addEventListener('resize', () => {
-            camera.aspect = canvas.clientWidth / canvas.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        // إخفاء الكعكة وإظهار الرسالة عند النقر
+        cake.addEventListener('click', function() {
+            this.style.opacity = '0';
+            this.style.transition = 'opacity 2s';
+            
+            setTimeout(function() {
+                document.getElementById('message').style.opacity = '1';
+            }, 1000);
         });
     </script>
 </body>
