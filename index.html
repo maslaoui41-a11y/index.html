@@ -1,385 +1,50 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عيد ميلاد سعيد!</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow-x: hidden;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .container {
-            max-width: 1000px;
-            width: 100%;
-            margin: 0 auto;
-        }
-        
-        header {
-            margin-bottom: 40px;
-            animation: fadeIn 1.5s ease;
-        }
-        
-        h1 {
-            font-size: 4rem;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        .subtitle {
-            font-size: 1.5rem;
-            opacity: 0.9;
-        }
-        
-        .cake-container {
-            position: relative;
-            width: 300px;
-            height: 250px;
-            margin: 0 auto 40px;
-        }
-        
-        .cake {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .cake-base {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            height: 70px;
-            background: #e84393;
-            border-radius: 10px 10px 5px 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-        }
-        
-        .cake-middle {
-            position: absolute;
-            bottom: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 170px;
-            height: 60px;
-            background: #fd79a8;
-            border-radius: 10px 10px 5px 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .cake-top {
-            position: absolute;
-            bottom: 130px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 50px;
-            background: #ff9eb5;
-            border-radius: 10px 10px 5px 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .cake-decoration {
-            position: absolute;
-            bottom: 180px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 160px;
-            height: 20px;
-            background: #ffcccc;
-            border-radius: 10px;
-        }
-        
-        .candle {
-            position: absolute;
-            bottom: 180px;
-            width: 8px;
-            height: 40px;
-            background: #ff4d4d;
-            border-radius: 4px;
-            z-index: 5;
-        }
-        
-        .flame {
-            position: absolute;
-            bottom: 220px;
-            width: 14px;
-            height: 24px;
-            background: #ffdd00;
-            border-radius: 50% 50% 20% 20%;
-            z-index: 6;
-            animation: flicker 1.5s infinite alternate;
-            box-shadow: 0 0 15px #ff8800;
-        }
-        
-        .message {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            margin: 30px auto;
-            max-width: 600px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: slideUp 1.2s ease;
-        }
-        
-        .message h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #ffdd00;
-        }
-        
-        .message p {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            margin-bottom: 15px;
-        }
-        
-        .wishes {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin: 40px 0;
-        }
-        
-        .wish-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            width: 150px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .wish-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .wish-card i {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: #ffdd00;
-        }
-        
-        footer {
-            margin-top: 40px;
-            padding: 20px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        .btn {
-            background: linear-gradient(45deg, #ff4d4d, #ff8e8e);
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            color: white;
-            cursor: pointer;
-            margin: 20px 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6);
-        }
-        
-        .balloon {
-            position: absolute;
-            width: 40px;
-            height: 50px;
-            background: #ff4d4d;
-            border-radius: 50%;
-            animation: float 15s infinite ease-in-out;
-            opacity: 0.7;
-            z-index: -1;
-        }
-        
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #ffdd00;
-            opacity: 0;
-            z-index: 100;
-            animation: confettiFall 5s linear infinite;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes flicker {
-            0% { transform: scale(1); opacity: 0.9; }
-            100% { transform: scale(1.1); opacity: 1; }
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
-            100% { transform: translateY(0) rotate(0deg); }
-        }
-        
-        @keyframes confettiFall {
-            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-        }
-        
-        @media (max-width: 768px) {
-            h1 { font-size: 3rem; }
-            .subtitle { font-size: 1.2rem; }
-            .message h2 { font-size: 2rem; }
-            .message p { font-size: 1rem; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>عيد ميلاد سعيد!</h1>
-            <p class="subtitle">كل عام وأنت بألف خير</p>
-        </header>
-        
-        <div class="cake-container">
-            <div class="cake">
-                <div class="cake-base"></div>
-                <div class="cake-middle"></div>
-                <div class="cake-top"></div>
-                <div class="cake-decoration"></div>
-                
-                <!-- الشموع -->
-                <div class="candle" style="left: 40%;">
-                    <div class="flame" style="left: 40%;"></div>
-                </div>
-                <div class="candle" style="left: 50%;">
-                    <div class="flame" style="left: 50%;"></div>
-                </div>
-                <div class="candle" style="left: 60%;">
-                    <div class="flame" style="left: 60%;"></div>
-                </div>
-                <div class="candle" style="left: 30%;">
-                    <div class="flame" style="left: 30%;"></div>
-                </div>
-                <div class="candle" style="left: 70%;">
-                    <div class="flame" style="left: 70%;"></div>
-                </div>
-            </div>
-        </div>
-        
-        <button class="btn" onclick="showMessage()">
-            <i class="fas fa-birthday-cake"></i> انقر للتهنئة
-        </button>
-        
-        <div class="message" id="message">
-            <h2>Happy Birthday My Love</h2>
-            <p>في يوم ميلادك، أتمنى لك عامًا مليئًا بالسعادة والنجاح والضحكات.</p>
-            <p>كل عام وأنت أغلى إنسان وأجمل قلب.</p>
-            <p>🎂 🎉 🎁 🎈</p>
-        </div>
-        
-        <div class="wishes">
-            <div class="wish-card">
-                <i class="fas fa-gift"></i>
-                <p>هناء</p>
-            </div>
-            <div class="wish-card">
-                <i class="fas-heart"></i>
-                <p>حب</p>
-            </div>
-            <div class="wish-card">
-                <i class="fas fa-laugh"></i>
-                <p>ضحك</p>
-            </div>
-            <div class="wish-card">
-                <i class="fas fa-star"></i>
-                <p>نجاح</p>
-            </div>
-        </div>
-        
-        <footer>
-            <p>© 2023 Sherryuser.github.io - كل عام وأنت بخير</p>
-        </footer>
-    </div>
-    
-    <script>
-        // إنشاء بالونات عشوائية
-        for (let i = 0; i < 15; i++) {
-            createBalloon();
-        }
-        
-        // إنشاء كونفيتي
-        for (let i = 0; i < 50; i++) {
-            createConfetti();
-        }
-        
-        function createBalloon() {
-            const balloon = document.createElement('div');
-            balloon.classList.add('balloon');
-            balloon.style.left = Math.random() * 100 + 'vw';
-            balloon.style.background = getRandomColor();
-            balloon.style.animationDelay = Math.random() * 5 + 's';
-            document.body.appendChild(balloon);
-        }
-        
-        function createConfetti() {
-            const confetti = document.createElement('div');
-            confetti.classList.add('confetti');
-            confetti.style.left = Math.random() * 100 + 'vw';
-            confetti.style.background = getRandomColor();
-            confetti.style.animationDelay = Math.random() * 5 + 's';
-            document.body.appendChild(confetti);
-        }
-        
-        function getRandomColor() {
-            const colors = ['#ff4d4d', '#ffdd00', '#6a11cb', '#2575fc', '#00c9ff', '#00ff95'];
-            return colors[Math.floor(Math.random() * colors.length)];
-        }
-        
-        function showMessage() {
-            const message = document.getElementById('message');
-            message.style.display = 'block';
-            
-            // تأثير للشموع
-            const flames = document.querySelectorAll('.flame');
-            flames.forEach(flame => {
-                flame.style.animation = 'none';
-                setTimeout(() => {
-                    flame.style.animation = 'flicker 1.5s infinite alternate';
-                }, 10);
-            });
-        }
-        
-        // إخفاء الرسالة في البداية
-        document.getElementById('message').style.display = 'none';
-    </script>
-</body>
-</html>
+<h2>🖖 &nbsp;Hey there! I'm Shaxriyor</h2>
+
+<!-- ## 👋 &nbsp;Hey there! I'm Shaxriyor -->
+
+### 👨🏻‍💻 &nbsp;About Me
+
+💡 &nbsp;I like to explore new technologies and coding.\
+🎓 &nbsp;I'm currently studying Business Information Systems at Westminster International University in Tashkent.\
+✍️ &nbsp;In my free time, I pursue Graphic Design and Learning more programming languages.\
+✉️ &nbsp;You can shoot me an email at sherryuser1@gmail.com
+
+<img alt="Night Coding" src="https://raw.githubusercontent.com/AVS1508/AVS1508/master/assets/Night-Coding.gif" align="right"/>
+
+### 🛠 &nbsp;Tech Stack
+
+![HTML](https://img.shields.io/badge/-HTML-05122A?style=flat&logo=HTML5)&nbsp;
+![CSS](https://img.shields.io/badge/-CSS-05122A?style=flat&logo=CSS3&logoColor=1572B6)&nbsp;
+![Bootstrap](https://img.shields.io/badge/-Bootstrap-05122A?style=flat&logo=bootstrap&logoColor=563D7C)&nbsp;
+![Git](https://img.shields.io/badge/-Git-05122A?style=flat&logo=git)&nbsp;
+![Javascript](https://img.shields.io/badge/-JavaScript-05122A?style=flat&logo=javascript)&nbsp;
+![Typescript](https://img.shields.io/badge/-TypeScript-05122A?style=flat&logo=typescript)&nbsp;
+![Tailwindcss](https://img.shields.io/badge/-Tailwind%20CSS-05122A?style=flat&logo=tailwindcss)&nbsp;
+![Csharp](https://img.shields.io/badge/-C%20Sharp-05122A?style=flat&logo=csharp)\
+![GitHub](https://img.shields.io/badge/-GitHub-05122A?style=flat&logo=github)&nbsp;
+![Visual Studio Code](https://img.shields.io/badge/-Visual%20Studio%20Code-05122A?style=flat&logo=visual-studio-code&logoColor=007ACC)&nbsp;
+![PyCharm](https://img.shields.io/badge/-PyCharm-05122A?style=flat&logo=pycharm&logoColor=007ACC)&nbsp;
+![Illustrator](https://img.shields.io/badge/-Illustrator-05122A?style=flat&logo=adobe-illustrator)&nbsp;
+![Photoshop](https://img.shields.io/badge/-Photoshop-05122A?style=flat&logo=adobe-photoshop)&nbsp;
+![Notion](https://img.shields.io/badge/-Notion-05122A?style=flat&logo=notion)
+
+### ⚙️ &nbsp;GitHub Analytics
+
+<p align="center">
+<a href="https://github.com/sherryuser">
+  <img height="180em" src="https://github-readme-stats-eight-theta.vercel.app/api?username=sherryuser&show_icons=true&theme=algolia&include_all_commits=true&count_private=true"/>
+  <img height="180em" src="https://github-readme-stats-eight-theta.vercel.app/api/top-langs/?username=sherryuser&layout=compact&langs_count=8&theme=algolia"/>
+</a>
+</p>
+
+### 🤝🏻 &nbsp;Connect with Me
+
+<p align="center">
+<a href="https://shaxriyor.me"><img src="https://img.shields.io/badge/-shaxriyor.me-3423A6?style=flat&logo=Google-Chrome&logoColor=white"/></a>
+<a href="https://instagram.com/sherryuser"><img src="https://img.shields.io/badge/-@sherryuser-E4405F?style=flat&logo=Instagram&logoColor=white"/></a>
+<a href="https://facebook.com/sherryuser7"><img src="https://img.shields.io/badge/-@sherryuser7-1877F2?style=flat&logo=Facebook&logoColor=white"/></a>
+<a href="https://www.t.me/sherryuser"><img src="https://img.shields.io/badge/-@sherryuser-3DA4E3?style=flat&logo=Telegram&logoColor=white"/></a>
+<a href="https://www.twitter.com/sherryuser"><img src="https://img.shields.io/badge/-@sherryuser-1769FF?style=flat&logo=Twitter&logoColor=white"/></a>
+<a href="https://linkedin.com/in/sherryuser"><img src="https://img.shields.io/badge/-Shaxriyor%20Ergashev-0077B5?style=flat&logo=Linkedin&logoColor=white"/></a>
+<a href="mailto:sherryuser1@gmail.com"><img src="https://img.shields.io/badge/-sherryuser1@gmail.com-D14836?style=flat&logo=Gmail&logoColor=white"/></a>
+</p>
